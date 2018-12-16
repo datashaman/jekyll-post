@@ -65,10 +65,8 @@ function message(message) {
   chrome.runtime.sendMessage(message);
 }
 
-const url = resolve('url');
-
 function providersUrl() {
-  return chrome.extension.getURL('/providers.json');
+  return chrome.extension.getURL("/providers.json");
 }
 
 function resolvers(metadata) {
@@ -89,70 +87,77 @@ function resolvers(metadata) {
   message(metadata);
 }
 
-$.getJSON(providersUrl(), function (providers) {
-  // log("Loaded " + providers.length + " providers");
+function fetch_metadata() {
+  let url = resolve("url");
 
-  let metadata = {
-    url: url
-  };
-  let endpoint;
-  let provider = providers.find(function (provider) {
-    endpoint = provider.endpoints.find(function (endpoint) {
-      let scheme = null;
+  $.getJSON(providersUrl(), function (providers) {
+    // log("Loaded " + providers.length + " providers");
 
-      if (endpoint.schemes) {
-        scheme = endpoint.schemes.find(function (scheme) {
-          return match(url, scheme);
-        });
-      } else {
-        if (match(url, provider.provider_url + "*")) {
-          scheme = provider.provider_url + "*";
+    let metadata = {
+      request_url: url
+    };
+    let endpoint;
+    let provider = providers.find(function (provider) {
+      endpoint = provider.endpoints.find(function (endpoint) {
+        let scheme = null;
+
+        if (endpoint.schemes) {
+          scheme = endpoint.schemes.find(function (scheme) {
+            return match(url, scheme);
+          });
+        } else {
+          if (match(url, provider.provider_url + "*")) {
+            scheme = provider.provider_url + "*";
+          }
         }
+
+        if (scheme) {
+          // log("Found scheme", scheme);
+        }
+
+        return Boolean(scheme);
+      });
+
+      if (endpoint) {
+        // log("Found endpoint", endpoint);
       }
 
-      if (scheme) {
-        // log("Found scheme", scheme);
-      }
-
-      return Boolean(scheme);
+      return Boolean(endpoint);
     });
 
-    if (endpoint) {
-      // log("Found endpoint", endpoint);
+    if (provider) {
+      // log("Found provider", provider);
     }
 
-    return Boolean(endpoint);
-  });
+    if (endpoint) {
+      let endpointUrl = endpoint.url.replace("{format}", "json");
 
-  if (provider) {
-    // log("Found provider", provider);
-  }
+      $.get(endpointUrl, {url: url}, function (oembed) {
+        log("Found oembed", oembed);
 
-  if (endpoint) {
-    let endpointUrl = endpoint.url.replace('{format}', 'json');
+        metadata.embed = {
+          title: oembed.title,
+          url: oembed.url,
+          description: oembed.description,
+          provider_name: oembed.provider_name,
+          provider_url: oembed.provider_url,
+          author_name: oembed.author_name,
+          author_url: oembed.author_url,
+          html: oembed.html,
+          thumbnail_url: oembed.thumbnail_url
+        };
 
-    $.get(endpointUrl, {url: url}, function (oembed) {
-      // log("Found oembed", oembed);
-
-      metadata.embed = {
-        title: oembed.title,
-        description: oembed.description,
-        provider_name: oembed.provider_name,
-        provider_url: oembed.provider_url,
-        author_name: oembed.author_name,
-        author_url: oembed.author_url,
-        html: oembed.html,
-        thumbnail_url: oembed.thumbnail_url
-      };
-
+        resolvers(metadata);
+      }).fail(function () {
+        log("Failed retrieving endpoint", arguments);
+      });
+    } else {
+      log("No endpoint found");
       resolvers(metadata);
-    }).fail(function () {
-      log("Failed retrieving endpoint", arguments);
-    });
-  } else {
-    log("No endpoint found");
-    resolvers(metadata);
-  }
-}).fail(function () {
-  log("Failed retrieving providers", arguments);
-});
+    }
+  }).fail(function () {
+    log("Failed retrieving providers", arguments);
+  });
+}
+
+fetch_metadata();

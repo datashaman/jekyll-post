@@ -44,7 +44,8 @@ jQuery(function ($) {
       let fm = {
         layout: options.layout,
         date: strftime("%F %H:%M:%S %z", now),
-        title: title
+        title: title,
+        request_url: $("#request_url").text()
       };
 
       const embedData = $("#embed").data();
@@ -70,7 +71,7 @@ jQuery(function ($) {
       [userName, repoName] = options.repo.split('/');
 
       const userRepo = gh.getRepo(userName, repoName);
-      const iconUrl = "https://jekyllrb.com/img/logo-2x.png";
+      const iconUrl = "icon128.png";
 
       userRepo.writeFile(options.branch, path, content, "Post: " + title, function (err, res, req) {
         if (err) {
@@ -83,7 +84,7 @@ jQuery(function ($) {
             iconUrl: iconUrl,
             imageUrl: fm.embed && fm.embed.thumbnail_url
               ? fm.embed.thumbnail_url
-              : iconUrl
+              : null
           });
         } else {
           chrome.notifications.create("post-result", {
@@ -93,7 +94,7 @@ jQuery(function ($) {
             iconUrl: iconUrl,
             imageUrl: fm.embed && fm.embed.thumbnail_url
               ? fm.embed.thumbnail_url
-              : iconUrl
+              : null
           }, function () {
             window.close();
           });
@@ -115,6 +116,9 @@ jQuery(function ($) {
                   maxWidth: "300px",
                   height: "auto"
                 });
+              break;
+            case "request_url":
+              $el.text(message[key]);
               break;
             default:
               $el.val(message[key]);
