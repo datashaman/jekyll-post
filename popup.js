@@ -53,13 +53,10 @@ jQuery(function ($) {
         fm.embed = embedData;
       }
 
-      let content = "---\n" + YAML.stringify(fm);
-
-      const description = $("#description").val();
-
-      if (description) {
-        content += "---\n" + description;
-      }
+      let content = "---\n" +
+        YAML.stringify(fm) +
+        "---\n" +
+        $("#description").val();
 
       const path =
         options.posts + "/" +
