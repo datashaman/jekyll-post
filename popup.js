@@ -6,7 +6,15 @@ const optionsRequired = [
   'token'
 ];
 
-String.prototype.lpad = function(padString, length) {
+function isEmpty (obj) {
+  for(var key in obj) {
+    if(obj.hasOwnProperty(key))
+      return false;
+  }
+  return true;
+}
+
+String.prototype.lpad = function (padString, length) {
   let str = this;
   while (str.length < length)
     str = padString + str;
@@ -31,33 +39,34 @@ jQuery(function ($) {
     $("#submit").click(function () {
       const now = new Date;
 
-      const data = {
-        description: $("#description").text(),
-        embed: $("#embed").data(),
-        title: $("#title").val()
-      };
+      let title = $("#title").val();
 
-      let frontMatter = {
+      let fm = {
         layout: options.layout,
         date: strftime("%F %H:%M:%S %z", now),
-        title: data.title
+        title: title
       };
 
-      if (data.embed !== {}) {
-        frontMatter.embed = data.embed;
+      const embedData = $("#embed").data();
+
+      if (!isEmpty(embedData)) {
+        fm.embed = embedData;
       }
 
-      const content = "---\n" +
-        YAML.stringify(frontMatter) + "\n" +
-        "---\n" +
-        data.description;
+      let content = "---\n" + YAML.stringify(fm);
+
+      const description = $("#description").val();
+
+      if (description) {
+        content += "---\n" + description;
+      }
 
       const path =
         options.posts + "/" +
         now.getFullYear() + "-" +
         now.getMonth().toString().lpad(2) + "-" +
         now.getDate().toString().lpad(2) + "-" +
-        slugify(data.title) + ".md";
+        slugify(title) + ".md";
 
       const gh = new GitHub({token: options.token});
 
@@ -66,7 +75,7 @@ jQuery(function ($) {
       const userRepo = gh.getRepo(userName, repoName);
       const iconUrl = "https://jekyllrb.com/img/logo-2x.png";
 
-      userRepo.writeFile(options.branch, path, content, data.title, function (err, res, req) {
+      userRepo.writeFile(options.branch, path, content, "Post: " + title, function (err, res, req) {
         if (err) {
           console.log(err, res, req);
 
@@ -75,7 +84,9 @@ jQuery(function ($) {
             title: "Post Unsuccessful",
             message: "Your post to " + options.repo + " was NOT successful",
             iconUrl: iconUrl,
-            imageUrl: data.embed ? data.embed.thumbnail_url : iconUrl
+            imageUrl: fm.embed && fm.embed.thumbnail_url
+              ? fm.embed.thumbnail_url
+              : iconUrl
           });
         } else {
           chrome.notifications.create("post-result", {
@@ -83,7 +94,9 @@ jQuery(function ($) {
             title: "Post Successful",
             message: "Your post to " + options.repo + " was successful",
             iconUrl: iconUrl,
-            imageUrl: data.embed ? data.embed.thumbnail_url : iconUrl
+            imageUrl: fm.embed && fm.embed.thumbnail_url
+              ? fm.embed.thumbnail_url
+              : iconUrl
           }, function () {
             window.close();
           });

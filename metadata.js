@@ -58,12 +58,7 @@ function resolve (key) {
 }
 
 function log(message, context) {
-  let params = {
-    message: message,
-    context: context
-  };
-
-  console.log(params);
+  console.log(message, context);
 }
 
 function message(message) {
