@@ -3,6 +3,11 @@
     "description" : "Post the current tab to your Jekyll site.",
     "version": "1.0",
     "manifest_version": 2,
+    "app": {
+      "urls": [
+        "https://github.com/datashaman/jekyll-post"
+      ]
+    },
     "browser_action": {
         "default_icon": {
             "48": "icon48.png",
