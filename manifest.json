@@ -1,0 +1,48 @@
+{
+    "name": "Jekyll Post",
+    "description" : "Post the current tab to your Jekyll site.",
+    "version": "1.0",
+    "manifest_version": 2,
+    "browser_action": {
+        "default_icon": {
+            "48": "icon48.png",
+            "128": "icon128.png"
+        },
+        "default_title": "Jekyll Post",
+        "default_popup": "popup.html"
+    },
+    "commands": {
+        "_execute_browser_action": {
+            "suggested_key": {
+                "default": "Ctrl+Shift+F",
+                "mac": "MacCtrl+Shift+F"
+            },
+            "description": "Post to Jekyll"
+        }
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "js": [
+                "scripts/jquery.min.js",
+                "scripts/GitHub.bundle.js",
+                "scripts/transliteration.min.js",
+                "scripts/yaml.min.js"
+            ]
+        }
+    ],
+    "options_page": "options.html",
+    "permissions": [
+        "activeTab",
+        "notifications",
+        "storage",
+        "http://*/",
+        "https://*/"
+    ],
+    "web_accessible_resources": [
+        "providers.json"
+    ]
+}
