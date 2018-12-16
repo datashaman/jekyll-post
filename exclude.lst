@@ -1,2 +1,6 @@
-build/
-
+build
+gulpfile.js
+Makefile
+node_modules
+package.json
+package-lock.json
