@@ -65,7 +65,7 @@ function message(message) {
   chrome.runtime.sendMessage(message);
 }
 
-var url = resolve('url');
+const url = resolve('url');
 
 function providersUrl() {
   return chrome.extension.getURL('/providers.json');
@@ -75,7 +75,7 @@ function resolvers(metadata) {
   // log("Metadata from oembed", metadata);
 
   for (const key of Object.keys(RESOLVERS)) {
-    if (key === 'url' || metadata[key]) {
+    if (metadata[key]) {
       continue;
     }
 
@@ -136,7 +136,6 @@ $.getJSON(providersUrl(), function (providers) {
 
       metadata.embed = {
         title: oembed.title,
-        url: url,
         description: oembed.description,
         provider_name: oembed.provider_name,
         provider_url: oembed.provider_url,
