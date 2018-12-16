@@ -13,7 +13,6 @@ jQuery(function ($) {
       } else {
         window.open(chrome.runtime.getURL('options.html'));
       }
-
       return;
     }
 
@@ -75,11 +74,11 @@ jQuery(function ($) {
             message: "Your post to " + repo + " was successful",
             iconUrl: "https://jekyllrb.com/img/logo-2x.png",
             imageUrl: data.embed.thumbnail_url
+          }, function () {
+            window.close();
           });
         }
       });
-
-      window.close();
     });
   });
 
