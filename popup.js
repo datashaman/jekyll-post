@@ -80,31 +80,31 @@ jQuery(function ($) {
         }
       });
     });
-  });
 
-  chrome.runtime.onMessage.addListener(function (message, sender) {
-    for(key of Object.keys(message)) {
-      let $el = $("#" + key);
+    chrome.runtime.onMessage.addListener(function (message, sender) {
+      for(key of Object.keys(message)) {
+        let $el = $("#" + key);
 
-      if ($el.length) {
-        switch (key) {
-          case "embed":
-            $el
-              .html(message[key].html)
-              .data(message[key])
-              .find("img").css({
-                maxWidth: "300px",
-                height: "auto"
-              });
-            break;
-          default:
-            $el.val(message[key]);
+        if ($el.length) {
+          switch (key) {
+            case "embed":
+              $el
+                .html(message[key].html)
+                .data(message[key])
+                .find("img").css({
+                  maxWidth: "300px",
+                  height: "auto"
+                });
+              break;
+            default:
+              $el.val(message[key]);
+          }
         }
       }
-    }
-  });
+    });
 
-  chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
-    chrome.tabs.executeScript(tabs[0].id, {file: "metadata.js"});
+    chrome.tabs.query({active: true, currentWindow: true}, function (tabs) {
+      chrome.tabs.executeScript(tabs[0].id, {file: "metadata.js"});
+    });
   });
 });
