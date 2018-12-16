@@ -19,14 +19,26 @@
     </div>
     <div class="row">
         <label for="repo">Repo</label>
-        <input type="text" id="repo" placeholder="username/repo" required="true"/>
+        <input type="text" id="repo" required="true"/>
+        <div class="help-text">For example, <i>username/repository</i> or <i>organization/username.github.io<i>.</div>
+    </div>
+    <div class="row">
+        <label for="branch">Branch</label>
+        <input type="text" id="branch" required="true"/>
+        <div class="help-text">For example, <i>master</i> or <i>gh-pages</i>.</div>
+    </div>
+    <div class="row">
+        <label for="posts">Posts</label>
+        <input type="text" id="posts" required="true"/>
+        <div class="help-text">For example, <i>_posts</i> or <i>docs</i>.</div>
     </div>
     <div class="row">
         <label for="layout">Layout</label>
-        <input type="text" id="layout" placeholder="post" required="true"/>
+        <input type="text" id="layout" required="true"/>
+        <div class="help-text">For example, <i>post</i>.</div>
     </div>
     <div class="row">
-        <button id="submit">Submit</button>
+        <button type="submit" id="submit">Submit</button>
     </div>
 
     <script src="scripts/jquery.min.js"></script>
