@@ -6,8 +6,18 @@ String.prototype.lpad = function(padString, length) {
 }
 
 jQuery(function ($) {
-  $("#submit").click(function () {
-    chrome.storage.sync.get(['token', 'repo', 'layout'], function ({ token, repo, layout }) {
+  chrome.storage.sync.get(['token', 'repo', 'layout'], function ({ token, repo, layout }) {
+    if (!token || !repo || !layout) {
+      if (chrome.runtime.openOptionsPage) {
+        chrome.runtime.openOptionsPage();
+      } else {
+        window.open(chrome.runtime.getURL('options.html'));
+      }
+
+      return;
+    }
+
+    $("#submit").click(function () {
       let now = new Date;
 
       let data = {
