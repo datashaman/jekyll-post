@@ -1,6 +1,11 @@
 RESOLVERS = {
   "description": [
+    // DeviantArt
     () => $(".dev-description").text(),
+
+    // Facebook
+    () => $(".fbPhotosPhotoCaption").text(),
+
     () => $('meta[property="og:description"]').attr("content"),
     () => $('meta[name="twitter:description"]').attr("content"),
     () => $('meta[name="description"]').attr("content"),
@@ -10,17 +15,26 @@ RESOLVERS = {
     () => $('[class*="content"] p').text()
   ],
   "image": [
-    () => $('.dev-view-deviation img[src]').attr('src'),
+    // DeviantArt
+    () => $(".dev-view-deviation img[src]").attr('src'),
+
+    // Facebook
+    () => $(".scaledImageFitWidth").attr('src'),
+    () => $(".spotlight").attr('src'),
+
+    // Reddit
+    () => $('[class$="media-element"]').attr('src'),
+
     () => $('meta[property="og:image:secure_url"]').attr('content'),
     () => $('meta[property="og:image:url"]').attr('content'),
     () => $('meta[property="og:image"]').attr('content'),
     () => $('meta[name="twitter:image:src"]').attr('content'),
     () => $('meta[name="twitter:image"]').attr('content'),
     () => $('meta[itemprop="image"]').attr('content'),
-    () => $('article img[src]').attr('src'),
-    () => $('#content img[src]').attr('src'),
+    () => $("article img[src]").attr('src'),
+    () => $("#content img[src]").attr('src'),
     () => $('img[alt*="author"]').attr('src'),
-    () => $('img[src]').attr('src')
+    () => $("img[src]").attr('src')
   ],
   "logo": [
     () => $('meta[property="og:logo"]').attr('content'),
@@ -28,7 +42,7 @@ RESOLVERS = {
     () => $('img[itemprop="logo"]').attr('src')
   ],
   "title": [
-    () => $("title").text(),
+    () => $("head > title").text(),
     () => $('meta[property="og:title"]').attr("content"),
     () => $('meta[name="twitter:title"]').attr("content"),
     () => $(".post-title").text(),
@@ -80,6 +94,7 @@ function resolvers(metadata) {
     }
 
     value = resolve(key);
+    // log("Resolved " + key + " to " + value);
 
     if (value) {
       metadata[key] = value;
@@ -134,20 +149,9 @@ function fetch_metadata() {
     if (endpoint) {
       let endpointUrl = endpoint.url.replace("{format}", "json");
 
-      $.get(endpointUrl, {url: url}, function (oembed) {
-        log("Found oembed", oembed);
-
-        metadata.embed = {
-          title: oembed.title,
-          url: oembed.url,
-          description: oembed.description,
-          provider_name: oembed.provider_name,
-          provider_url: oembed.provider_url,
-          author_name: oembed.author_name,
-          author_url: oembed.author_url,
-          html: oembed.html,
-          thumbnail_url: oembed.thumbnail_url
-        };
+      $.getJSON(endpointUrl, {url: url}, function (embed) {
+        // log("Found embed", embed);
+        metadata.embed = embed;
 
         resolvers(metadata);
       }).fail(function () {

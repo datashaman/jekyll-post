@@ -45,6 +45,7 @@ jQuery(function ($) {
         layout: options.layout,
         date: strftime("%F %H:%M:%S %z", now),
         title: title,
+        tags: $("#tags").val(),
         image: $("#image").attr('src'),
         request_url: $("#request_url").text()
       };
