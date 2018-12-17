@@ -1,5 +1,6 @@
 RESOLVERS = {
   "description": [
+    () => $(".dev-description").text(),
     () => $('meta[property="og:description"]').attr("content"),
     () => $('meta[name="twitter:description"]').attr("content"),
     () => $('meta[name="description"]').attr("content"),
@@ -9,6 +10,7 @@ RESOLVERS = {
     () => $('[class*="content"] p').text()
   ],
   "image": [
+    () => $('.dev-view-deviation img[src]').attr('src'),
     () => $('meta[property="og:image:secure_url"]').attr('content'),
     () => $('meta[property="og:image:url"]').attr('content'),
     () => $('meta[property="og:image"]').attr('content'),
@@ -26,13 +28,13 @@ RESOLVERS = {
     () => $('img[itemprop="logo"]').attr('src')
   ],
   "title": [
+    () => $("title").text(),
     () => $('meta[property="og:title"]').attr("content"),
     () => $('meta[name="twitter:title"]').attr("content"),
     () => $(".post-title").text(),
     () => $(".entry-title").text(),
     () => $('h1[class*="title"] a').text(),
-    () => $('h1[class*="title"]').text(),
-    () => $("title").text()
+    () => $('h1[class*="title"]').text()
   ],
   "url": [
     () => $('meta[property="og:url"]').attr('content'),

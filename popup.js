@@ -45,6 +45,7 @@ jQuery(function ($) {
         layout: options.layout,
         date: strftime("%F %H:%M:%S %z", now),
         title: title,
+        image: $("#image").attr('src'),
         request_url: $("#request_url").text()
       };
 
@@ -113,6 +114,14 @@ jQuery(function ($) {
                 .html(message[key].html)
                 .data(message[key])
                 .find("img").css({
+                  maxWidth: "300px",
+                  height: "auto"
+                });
+              break;
+            case "image":
+              $el
+                .attr('src', message[key])
+                .css({
                   maxWidth: "300px",
                   height: "auto"
                 });
